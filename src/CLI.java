@@ -65,7 +65,7 @@ public class CLI extends ProcessXML {
 
         ArrayList<String> words = new ArrayList<String>(Arrays.asList(text.split(" ")));
         for(int i=0; i<dictionnaire.size(); i++){
-            
+
         }
     }
 
