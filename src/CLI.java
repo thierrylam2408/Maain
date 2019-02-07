@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,11 +10,15 @@ public class CLI extends ProcessXML {
     private ArrayList<ArrayList<String>> liensExternes;
     private HashMap<String, Integer> numero_pages;
     private Pattern pattern = Pattern.compile("\\[\\[([^\\]]*)\\|[^\\]]*\\]\\]");
+    private ArrayList<String> dictionnaire;
+    private ArrayList<HashMap<Integer, Float>> mots_pages;
 
-    public CLI(String xml){
+    public CLI(String xml, ArrayList<String> dictionnaire){
         super(xml);
         liensExternes = new ArrayList<>();
         numero_pages = new HashMap<>();
+        this.dictionnaire = dictionnaire;
+        this.mots_pages = new ArrayList<>();
     }
 
     public void generate(){
@@ -57,6 +62,11 @@ public class CLI extends ProcessXML {
             liensPagei.add(lien);
         }
         liensExternes.add(liensPagei);
+
+        ArrayList<String> words = new ArrayList<String>(Arrays.asList(text.split(" ")));
+        for(int i=0; i<dictionnaire.size(); i++){
+            
+        }
     }
 
     @Override

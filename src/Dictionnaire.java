@@ -18,7 +18,7 @@ public class Dictionnaire extends ProcessXML{
         dictionnaire = new ArrayList<>();
     }
 
-    public void generate(){
+    public ArrayList<String> generate(){
         try {
             super.process();
             occurences = occurences.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(
@@ -32,6 +32,7 @@ public class Dictionnaire extends ProcessXML{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return dictionnaire;
     }
 
     //TODO prendre la racine du mot
