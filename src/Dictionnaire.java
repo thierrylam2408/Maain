@@ -63,6 +63,13 @@ public class Dictionnaire extends ProcessXML{
         return word.toLowerCase();
     }
     
+    private String racine(String word) {
+    	
+    	
+		return word;
+  
+    }
+    
 
     //TODO filtre stopwords
     private String[] splitWords(String words){
