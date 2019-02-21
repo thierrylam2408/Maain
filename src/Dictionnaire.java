@@ -1,21 +1,39 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/*
-virer les stopwords une fois tous les mots fréquents faire un xml/json
- */
+/* Virer les stopwords une fois tous les mots fréquents faire un xml-json */
 
 public class Dictionnaire extends ProcessXML{
 
     private static final int TAILLE = 700;
     private static ArrayList<String> dictionnaire;
     private LinkedHashMap<String, Integer> occurences;
+    
+    private ArrayList<String> stopWords;
 
     public Dictionnaire(String xml){
+    	
         super(xml);
         occurences = new LinkedHashMap<>();
         dictionnaire = new ArrayList<>();
+        
+    	Scanner sc;
+		try {
+			sc = new Scanner(new File("./stopwords_fr.txt"));
+			stopWords = new ArrayList<String>();
+			
+			while (sc.hasNextLine()) {
+	    		stopWords.add(sc.next());
+			}
+	    	sc.close();
+	    	
+		} catch (FileNotFoundException e) {
+			
+			e.printStackTrace();
+		}
     }
 
     public ArrayList<String> generate(){
@@ -29,6 +47,7 @@ public class Dictionnaire extends ProcessXML{
             dictionnaire.sort(String::compareToIgnoreCase);
             System.out.println(dictionnaire.size());
             System.out.println(dictionnaire);
+        	
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,33 +57,39 @@ public class Dictionnaire extends ProcessXML{
     //TODO prendre la racine du mot
     private String normalize(String word){
         word = Normalizer.normalize(word, Normalizer.Form.NFD);
+       // System.out.println(word);
         word = word.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+       // System.out.println(word);
         return word.toLowerCase();
     }
+    
 
     //TODO filtre stopwords
     private String[] splitWords(String words){
+    	
         return Arrays.asList(words.replaceAll("[^A-Za-z]", " ")
-                .split(" ")).stream().filter(x -> x.length()>1).toArray(String[]::new);
+                .split(" ")).stream().filter(x -> x.length()>2 && !stopWords.contains(x)).toArray(String[]::new);
     }
 
     @Override
-    protected void processTitle(String title) {
-        for(String word: splitWords(title)){
-            String w = normalize(word);
-            if(!occurences.containsKey(w))
-                occurences.put(w,1);
-            else occurences.put(w,occurences.get(w)+1);
-        }
+    protected void processTitle(String title){
+        
+			for(String word: splitWords(title)){
+			    String w = normalize(word);
+			    if(!occurences.containsKey(w))
+			        occurences.put(w,1);
+			    else occurences.put(w,occurences.get(w)+1);
+			}
+		
     }
 
     @Override
     protected void processText(String text) {
-        for(String word: splitWords(text)){
-            String w = normalize(word);
-            if(!occurences.containsKey(w))
-                occurences.put(w,1);
-            else occurences.put(w,occurences.get(w)+1);
+    	String w = normalize(text);
+        for(String word: splitWords(w)){
+            if(!occurences.containsKey(word))
+                occurences.put(word,1);
+            else occurences.put(word,occurences.get(word)+1);
         }
     }
 
