@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.xml.stream.*;
 
 public class Corpus extends ProcessXML {
@@ -45,12 +44,13 @@ public class Corpus extends ProcessXML {
         }
     }
 
+    //TODO filtrer avec les words_filter
     @Override
     public void processText(String text) {
         try{
-            if(intersectionNonNul((ArrayList<String>)Arrays.asList(text.split(" ")), words_filter)){
+            //if(intersectionNonNul((ArrayList<String>)Arrays.asList(text.split(" ")), words_filter)){
 
-            }
+            //}
             out.writeStartElement("text");
             out.writeCharacters(text);
             out.writeEndElement();

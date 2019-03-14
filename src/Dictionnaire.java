@@ -2,10 +2,6 @@ import java.text.Normalizer;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/*
-virer les stopwords une fois tous les mots fréquents faire un xml/json
- */
-
 public class Dictionnaire extends ProcessXML{
 
     private static final int TAILLE = 700;
@@ -27,8 +23,6 @@ public class Dictionnaire extends ProcessXML{
                     .toArray(new String[occurences.size()]), occurences.keySet().size()-TAILLE, occurences.keySet().size());
             dictionnaire.addAll(Arrays.asList(words));
             dictionnaire.sort(String::compareToIgnoreCase);
-            System.out.println(dictionnaire.size());
-            System.out.println(dictionnaire);
         } catch (Exception e) {
             e.printStackTrace();
         }
