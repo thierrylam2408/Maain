@@ -1,4 +1,5 @@
 
+import java.text.Normalizer;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,9 +68,9 @@ public class CLI_RMP extends ProcessXML {
         liensExternes.add(liensPagei);
 
         int indicePage = numero_pages.get(lastTitle);
-        ArrayList<String> words = new ArrayList<String>(Arrays.asList(text.split(" ")));
+        String[] words = splitWords(text);
         for(String word: words){
-            //TODO normaliser word
+            word = normalize(word);
             if(dictionnaire.contains(word)){
                 int indiceWord = dictionnaire.indexOf(word);
                 if(mots_pages.containsKey(indiceWord)){
@@ -88,7 +89,7 @@ public class CLI_RMP extends ProcessXML {
         for(Integer indiceMot: mots_pages.keySet()){
             for(Integer indiceP: mots_pages.get(indiceMot).keySet()){
                 if(indiceP == nbPage-1) {
-                    mots_pages.get(indiceMot).put(indiceP, mots_pages.get(indiceMot).get(indiceP)/words.size());
+                    mots_pages.get(indiceMot).put(indiceP, mots_pages.get(indiceMot).get(indiceP)/words.length);
                 }
             }
         }
@@ -98,4 +99,14 @@ public class CLI_RMP extends ProcessXML {
     protected void processEnd() {
     }
 
+    private String normalize(String word){
+        word = Normalizer.normalize(word, Normalizer.Form.NFD);
+        word = word.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return word.toLowerCase();
+    }
+
+    private String[] splitWords(String words){
+        return Arrays.asList(words.replaceAll("[^A-Za-z]", " ")
+                .split(" ")).stream().filter(x -> x.length()>1).toArray(String[]::new);
+    }
 }

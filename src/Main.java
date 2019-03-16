@@ -1,4 +1,5 @@
 import java.io.*;
+import java.text.Normalizer;
 import java.util.*;
 
 public class Main {
@@ -18,20 +19,20 @@ public class Main {
         //DICO
 		Dictionnaire dico = new Dictionnaire(inputXML);
 		ArrayList<String> dictionnaire = dico.generate();
-		System.out.println(dictionnaire);
+		System.out.println("Dico:"+dictionnaire);
 
 		//CLI_RMP
 		CLI_RMP cliRMP = new CLI_RMP(inputXML, dictionnaire);
 		CLI_RMP_Data CLI_RMP_data = cliRMP.generate();
-		System.out.println(CLI_RMP_data.contenu);
-		System.out.println(CLI_RMP_data.ligne);
-		System.out.println(CLI_RMP_data.index);
-		System.out.println(CLI_RMP_data.mots_pages.get(2));
+		System.out.println("C:"+CLI_RMP_data.contenu);
+		System.out.println("L:"+CLI_RMP_data.ligne);
+		System.out.println("I:"+CLI_RMP_data.index);
+		System.out.println("Mot->(Page,Frequence): "+CLI_RMP_data.mots_pages);
 
 		//PageRank
         PageRank pg = new PageRank(CLI_RMP_data, dictionnaire,0.001, 0.85, 3	); //k ~ 1000 en vrai
         TreeMap<Double, ArrayList<Integer>> rank = pg.generate();
-        System.out.println(rank);
+        System.out.println("Rank->Page: "+rank);
 
         HashMap<Integer, ArrayList<Integer>> result = new HashMap<>();
         //indice mot -> indices pages ordonnées par rank et frequence important
@@ -49,7 +50,7 @@ public class Main {
             }
             result.put(indice_mot, pages);
 		}
-		System.out.println(result);
+		System.out.println("Mot->Pages ordonnees par Rank:"+result);
 
         //Final output
         HashMap<Integer, String> indice_page_title = new HashMap<>();
@@ -74,15 +75,40 @@ public class Main {
             final FileInputStream fin = new FileInputStream("file.ser");
             ois = new ObjectInputStream(fin);
             final FinalOutput res = (FinalOutput) ois.readObject();
-            //System.out.println(res.mots);
+            String requete1 = "abstraite algebre";
+            String[] words = splitWords(requete1);
+            ArrayList<ArrayList<Integer>> pages_requete = new ArrayList<>();
+            for(String word: words){
+                pages_requete.add(res.result.get(res.mots.indexOf(normalize(word))));
+            }
+            System.out.println("Pages par mot:"+pages_requete);
+            //Faire l'intersection des pages
+            ArrayList<Integer> intersection = intersection(pages_requete);
+            System.out.println("Intersection:"+intersection);
         }catch(final IOException ex ){
             ex.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        String requete = " ";
+
+
     }
 
 
+    private static String normalize(String word){
+        word = Normalizer.normalize(word, Normalizer.Form.NFD);
+        word = word.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return word.toLowerCase();
+    }
+
+    private static String[] splitWords(String words){
+        return Arrays.asList(words.replaceAll("[^A-Za-z]", " ")
+                .split(" ")).stream().filter(x -> x.length()>1).toArray(String[]::new);
+    }
+
+    private static ArrayList<Integer> intersection(ArrayList<ArrayList<Integer>> pages){
+	    //TODO
+	    return null;
+    }
 
 }
