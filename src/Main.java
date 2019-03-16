@@ -33,6 +33,7 @@ public class Main {
         PageRank pg = new PageRank(CLI_RMP_data, dictionnaire,0.001, 0.85, 3	); //k ~ 1000 en vrai
         TreeMap<Double, ArrayList<Integer>> rank = pg.generate();
         System.out.println("Rank->Page: "+rank);
+        ArrayList<Integer> pagesOrder = joinPageOrderByRank(rank);
 
         HashMap<Integer, ArrayList<Integer>> result = new HashMap<>();
         //indice mot -> indices pages ordonnées par rank et frequence important
@@ -57,7 +58,7 @@ public class Main {
         for(Map.Entry<String, Integer> entry : CLI_RMP_data.numero_pages.entrySet()){
             indice_page_title.put(entry.getValue(), entry.getKey());
         }
-        FinalOutput out = new FinalOutput(result, indice_page_title, dictionnaire);
+        FinalOutput out = new FinalOutput(result, indice_page_title, dictionnaire, pagesOrder);
         ObjectOutputStream oos = null;
         try{
             final FileOutputStream fichier = new FileOutputStream("file.ser");
@@ -68,7 +69,18 @@ public class Main {
             ex.printStackTrace();
         }
 
+        System.out.println("Simulation Serveur");
+        simuServeur();
+    }
 
+    private static ArrayList<Integer> joinPageOrderByRank(TreeMap<Double, ArrayList<Integer>> rank){
+        ArrayList<Integer> join = new ArrayList<>();
+        for(Double r: rank.keySet())
+            join.addAll(rank.get(r));
+        return join;
+    }
+
+    public static void simuServeur(){
         //TEST SERVER
         ObjectInputStream ois = null;
         try{
@@ -83,17 +95,24 @@ public class Main {
             }
             System.out.println("Pages par mot:"+pages_requete);
             //Faire l'intersection des pages
-            ArrayList<Integer> intersection = intersection(pages_requete);
+            ArrayList<Integer> intersection = intersection(pages_requete, res.order_pages);
             System.out.println("Intersection:"+intersection);
+
+            ArrayList<Integer> e1 = new ArrayList<>();e1.addAll(Arrays.asList(2,3,1));
+            ArrayList<Integer> e2 = new ArrayList<>();e2.addAll(Arrays.asList(1));
+            ArrayList<Integer> e3 = new ArrayList<>();e3.addAll(Arrays.asList());
+            ArrayList<Integer> e4 = new ArrayList<>();e4.addAll(Arrays.asList(2,1));
+            ArrayList<ArrayList<Integer>> l = new ArrayList<>();
+            l.add(e2);l.add(e1);
+            System.out.println(l);
+            System.out.println(intersection(l, res.order_pages));
+            System.out.println();
         }catch(final IOException ex ){
             ex.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-
     }
-
 
     private static String normalize(String word){
         word = Normalizer.normalize(word, Normalizer.Form.NFD);
@@ -106,9 +125,31 @@ public class Main {
                 .split(" ")).stream().filter(x -> x.length()>1).toArray(String[]::new);
     }
 
-    private static ArrayList<Integer> intersection(ArrayList<ArrayList<Integer>> pages){
-	    //TODO
-	    return null;
+    private static ArrayList<Integer> intersection(ArrayList<ArrayList<Integer>> requetes, ArrayList<Integer> order){
+	    if(requetes.size() == 1){
+	        return requetes.get(0);
+        }
+        ArrayList<Integer> p1 = requetes.get(0);
+	    ArrayList<Integer> p2 = requetes.get(1);
+        int i1 = 0;
+	    int i2 = 0;
+	    ArrayList<Integer> intersection = new ArrayList<>();
+        System.out.println("order: "+order);
+        while(i1 < p1.size() && i2 < p2.size()){
+            if(p1.get(i1).equals(p2.get(i2))){
+                intersection.add(p1.get(i1));
+                i1++;
+                i2++;
+            }else if(order.indexOf(p1.get(i1)) < order.indexOf(p2.get(i2))){
+                i1++;
+            }else{ //order.indexOf(p1.get(i1)) > order.indexOf(p2.get(i2))
+                i2++;
+            }
+        }
+        requetes.remove(0);
+        requetes.remove(0);
+        requetes.add(0, intersection);
+        return intersection(requetes, order);
     }
 
 }
