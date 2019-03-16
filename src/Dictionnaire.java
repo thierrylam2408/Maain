@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 //import java.org.tartarus.snowball.ext.*;
 
 
-/* Virer les stopwords une fois tous les mots fréquents faire un xml-json */
 
 public class Dictionnaire extends ProcessXML{
 
@@ -51,9 +50,8 @@ public class Dictionnaire extends ProcessXML{
                     .toArray(new String[occurences.size()]), occurences.keySet().size()-TAILLE, occurences.keySet().size());
             dictionnaire.addAll(Arrays.asList(words));
             dictionnaire.sort(String::compareToIgnoreCase);
-            System.out.println(dictionnaire.size());
-            System.out.println(dictionnaire);
-        	
+            //System.out.println(dictionnaire.size());
+            //System.out.println(dictionnaire);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,14 +84,12 @@ public class Dictionnaire extends ProcessXML{
 
     @Override
     protected void processTitle(String title){
-        
-			for(String word: splitWords(title)){
-			    String w = normalize(word);
-			    if(!occurences.containsKey(w))
-			        occurences.put(w,1);
-			    else occurences.put(w,occurences.get(w)+1);
-			}
-		
+        String w = normalize(title);
+        for(String word: splitWords(w)){
+            if(!occurences.containsKey(word))
+                occurences.put(word,1);
+            else occurences.put(word,occurences.get(word)+1);
+        }
     }
 
     @Override
