@@ -8,7 +8,7 @@ public class CLI_RMP extends ProcessXML {
 
     private ArrayList<ArrayList<String>> liensExternes;
     private HashMap<String, Integer> numero_pages; //place dans le fichier xml
-    private Pattern pattern = Pattern.compile("\\[\\[([^\\]]*)\\|[^\\]]*\\]\\]"); //ou sans "|" voir l328 de frwiki-ex
+    private Pattern pattern = Pattern.compile("\\[\\[([^\\]]*) (\\|[^\\]]*\\]\\]) | (\\[\\[([^\\]]*)\\]\\])");
     private ArrayList<String> dictionnaire;
     private HashMap<Integer, HashMap<Integer, Double>> mots_pages;
     //Indice du mot ds le dictionnaire -> (Indice de la page ds numero_page, frequence du mot ds la page)
@@ -59,10 +59,14 @@ public class CLI_RMP extends ProcessXML {
 
     @Override
     protected void processText(String text) {
+        text = text.replace("[[", " [[");
         Matcher matcher = pattern.matcher(text);
         ArrayList<String> liensPagei = new ArrayList<>();
         while(matcher.find()){
-            String lien = matcher.group(1);
+            String lien = matcher.group(0).substring(3, matcher.group(0).length()-2);
+            if(lien.contains("|")) {
+                lien = lien.split("\\|")[0];
+            }
             liensPagei.add(lien.toLowerCase());
         }
         liensExternes.add(liensPagei);

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class Dictionnaire extends ProcessXML{
 
-    private static final int TAILLE = 700;
+    private static final int TAILLE = 10000;
     private static ArrayList<String> dictionnaire;
     private LinkedHashMap<String, Integer> occurences;
     
@@ -44,18 +44,23 @@ public class Dictionnaire extends ProcessXML{
     public ArrayList<String> generate(){
         try {
             super.process();
+
             occurences = occurences.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(
                     Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
             String words[] = Arrays.copyOfRange(occurences.keySet()
-                    .toArray(new String[occurences.size()]), occurences.keySet().size()-TAILLE, occurences.keySet().size());
+                    .toArray(new String[occurences.size()]), beginOccu(), occurences.keySet().size());
             dictionnaire.addAll(Arrays.asList(words));
             dictionnaire.sort(String::compareToIgnoreCase);
-            //System.out.println(dictionnaire.size());
-            //System.out.println(dictionnaire);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return dictionnaire;
+    }
+
+    private int beginOccu(){
+        if(occurences.keySet().size() > TAILLE){
+            return occurences.keySet().size()-TAILLE;
+        }else return 0;
     }
 
     //TODO prendre la racine du mot

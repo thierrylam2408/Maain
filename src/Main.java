@@ -7,22 +7,22 @@ public class Main {
 	public static void main(String[] args) {
 	    //FILE
 		//String inputXML = "/Volumes/Lexar/frwiki-20190120-pages-articles-multistream.xml";
-		//String inputXML = "frwiki-debut.xml";
-		String inputXML = "frwiki-ex.xml";
+		String inputXML = "frwiki-debut.xml";
+		//String inputXML = "frwiki-ex.xml";
 		String outputXML = "clean.xml";
 
 		//CORPUS
-		ArrayList<String> words_filter = new ArrayList<>(Arrays.asList("algorithme", "complexité", "calculer", "temps"));
+		ArrayList<String> words_filter = new ArrayList<>(Arrays.asList("mission", "algorithme"));
 		Corpus corpus = new Corpus(inputXML);
 		System.out.println(corpus.generate(outputXML, words_filter));
 
         //DICO
-		Dictionnaire dico = new Dictionnaire(inputXML);
+		Dictionnaire dico = new Dictionnaire(outputXML);
 		ArrayList<String> dictionnaire = dico.generate();
-		System.out.println("Dico:"+dictionnaire);
+		System.out.println("Dico:"+dictionnaire.size());
 
 		//CLI_RMP
-		CLI_RMP cliRMP = new CLI_RMP(inputXML, dictionnaire);
+		CLI_RMP cliRMP = new CLI_RMP(outputXML, dictionnaire);
 		CLI_RMP_Data CLI_RMP_data = cliRMP.generate();
 		System.out.println("C:"+CLI_RMP_data.contenu);
 		System.out.println("L:"+CLI_RMP_data.ligne);
@@ -91,21 +91,24 @@ public class Main {
             String[] words = splitWords(requete1);
             ArrayList<ArrayList<Integer>> pages_requete = new ArrayList<>();
             for(String word: words){
-                pages_requete.add(res.result.get(res.mots.indexOf(normalize(word))));
+                if(res.result.get(res.mots.indexOf(normalize(word))) != null)
+                    pages_requete.add(res.result.get(res.mots.indexOf(normalize(word))));
+                else pages_requete.add(new ArrayList<>());
             }
             System.out.println("Pages par mot:"+pages_requete);
             //Faire l'intersection des pages
             ArrayList<Integer> intersection = intersection(pages_requete, res.order_pages);
             System.out.println("Intersection:"+intersection);
 
-            ArrayList<Integer> e1 = new ArrayList<>();e1.addAll(Arrays.asList(2,3,1));
+            ArrayList<Integer> e1 = new ArrayList<>();e1.addAll(Arrays.asList(3,1,2));
             ArrayList<Integer> e2 = new ArrayList<>();e2.addAll(Arrays.asList(1));
             ArrayList<Integer> e3 = new ArrayList<>();e3.addAll(Arrays.asList());
-            ArrayList<Integer> e4 = new ArrayList<>();e4.addAll(Arrays.asList(2,1));
+            ArrayList<Integer> e4 = new ArrayList<>();e4.addAll(Arrays.asList(1,2));
+            ArrayList<Integer> o = new ArrayList<>();o.addAll(Arrays.asList(3,1,2));
             ArrayList<ArrayList<Integer>> l = new ArrayList<>();
             l.add(e2);l.add(e1);
             System.out.println(l);
-            System.out.println(intersection(l, res.order_pages));
+            System.out.println(intersection(l,o));
             System.out.println();
         }catch(final IOException ex ){
             ex.printStackTrace();

@@ -1,5 +1,7 @@
 import java.io.*;
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.xml.stream.*;
 
 public class Corpus extends ProcessXML {
@@ -7,14 +9,15 @@ public class Corpus extends ProcessXML {
     private int create;
     private XMLStreamWriter out;
     private ArrayList<String> words_filter;
+    private String currentTitle;
 
     public Corpus(String xmlin){
         super(xmlin);
         create = 0;
     }
 
-    //TODO FILTER AVEC words_filter
     public int generate(String xmlout, ArrayList<String> words_filter) {
+        currentTitle = "";
         File file = new File(xmlout);
         this.words_filter = words_filter;
         try {
@@ -33,29 +36,26 @@ public class Corpus extends ProcessXML {
 
     @Override
     public void processTitle(String title) {
-        try {
-            create++;
-            out.writeStartElement("page");
-            out.writeStartElement("title");
-            out.writeCharacters(title);
-            out.writeEndElement();
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
+        currentTitle = title;
     }
 
     //TODO filtrer avec les words_filter
     @Override
     public void processText(String text) {
-    	
+        text = normalize(text);
+        ArrayList<String> textSplit = new ArrayList<>(Arrays.asList(splitWords(text)));
         try{
-            //if(intersectionNonNul((ArrayList<String>)Arrays.asList(text.split(" ")), words_filter)){
-
-            //}
-            out.writeStartElement("text");
-            out.writeCharacters(text);
-            out.writeEndElement();
-            out.writeEndElement();
+            if(intersectionNonNul(textSplit) || words_filter.isEmpty()){
+                create++;
+                out.writeStartElement("page");
+                out.writeStartElement("title");
+                out.writeCharacters(currentTitle);
+                out.writeEndElement();
+                out.writeStartElement("text");
+                out.writeCharacters(text);
+                out.writeEndElement();
+                out.writeEndElement();
+            }
         }catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -73,12 +73,23 @@ public class Corpus extends ProcessXML {
         }
     }
 
-    private boolean intersectionNonNul(ArrayList<String> l1, ArrayList<String> l2){
-        for (String aL1 : l1) {
-            if (l2.contains(aL1)) {
+    private boolean intersectionNonNul(ArrayList<String> words){
+        for (String word : words_filter) {
+            if (words.contains(word)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private String normalize(String word){
+        word = Normalizer.normalize(word, Normalizer.Form.NFD);
+        word = word.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return word.toLowerCase();
+    }
+
+    private String[] splitWords(String words){
+        return Arrays.asList(words.replaceAll("[^A-Za-z]", " ")
+                .split(" ")).stream().filter(x -> x.length()>1).toArray(String[]::new);
     }
 }
