@@ -14,7 +14,7 @@ public class Main {
 		//CORPUS
 		ArrayList<String> words_filter = new ArrayList<>(Arrays.asList("algorithme", "complexité", "calculer", "temps"));
 		Corpus corpus = new Corpus(inputXML);
-		//System.out.println(corpus.generate(outputXML, words_filter));
+		System.out.println(corpus.generate(outputXML, words_filter));
 
         //DICO
 		Dictionnaire dico = new Dictionnaire(inputXML);
