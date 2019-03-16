@@ -47,9 +47,10 @@ public class Corpus extends ProcessXML {
 
     @Override
     public void processText(String text) {
+    	
         try{
 //            if(intersectionNonNul((ArrayList<String>)Arrays.asList(text.split(" ")), words_filter)) {
-//
+//            	
 //            }
             out.writeStartElement("text");
             out.writeCharacters(text);

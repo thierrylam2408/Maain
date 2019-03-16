@@ -1,8 +1,14 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.Normalizer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
+//import java.org.tartarus.snowball.ext.*;
+
 
 /* Virer les stopwords une fois tous les mots fréquents faire un xml-json */
 
@@ -63,9 +69,9 @@ public class Dictionnaire extends ProcessXML{
         return word.toLowerCase();
     }
     
-    private String racine(String word) {
+    private String racineMots(String word) {
     	
-    	
+
 		return word;
   
     }
@@ -92,7 +98,13 @@ public class Dictionnaire extends ProcessXML{
 
     @Override
     protected void processText(String text) {
+    	
     	String w = normalize(text);
+    	
+    	//String s = stem.w;
+    	
+    	String rootWord = racineMots(w);
+    	
         for(String word: splitWords(w)){
             if(!occurences.containsKey(word))
                 occurences.put(word,1);

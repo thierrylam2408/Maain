@@ -5,8 +5,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 	    //FILE
-		//String inputXML = "/Volumes/Lexar/frwiki-20190120-pages-articles-multistream.xml";
-		String inputXML = "frwiki-debut.xml";
+		String inputXML = "/Volumes/Lexar/frwiki-20190120-pages-articles-multistream.xml";
+		//String inputXML = "frwiki-debut.xml";
 		String outputXML = "clean.xml";
 
 		//CORPUS

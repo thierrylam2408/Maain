@@ -1,14 +1,20 @@
-
+import javax.xml.XMLConstants;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLResolver;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+
 import java.io.*;
 
 public abstract class ProcessXML {
 
-    protected abstract void processTitle(String title);
+    
+	private static final XMLResolver NO_OP_XML_RESOLVER = null;
+
+	protected abstract void processTitle(String title);
     protected abstract void processText(String text);
     protected abstract void processEnd();
     private String xml;
@@ -18,9 +24,18 @@ public abstract class ProcessXML {
     }
 
     protected void process(){
+    	
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        factory.setProperty("javax.xml.stream.isCoalescing", true);
-        //factory.setProperty(XMLConstants.FEATURE_SECURE_PROCESSING, false);
+        
+         factory.setProperty("javax.xml.stream.isCoalescing", true);
+         //factory.setFeature(, false);
+         factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+         
+         //factory.setFeature("dbvdg",false);
+
+         //factory.setXMLResolver(NO_OP_XML_RESOLVER);
+        
+        
         File filein = new File(xml);
         try {
             XMLEventReader xmlEventReader = factory.createXMLEventReader(new FileReader(filein));
