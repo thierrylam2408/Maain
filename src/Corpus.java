@@ -14,10 +14,10 @@ public class Corpus extends ProcessXML {
     public Corpus(String xmlin){
         super(xmlin);
         create = 0;
+        currentTitle = "";
     }
 
     public int generate(String xmlout, ArrayList<String> words_filter) {
-        currentTitle = "";
         File file = new File(xmlout);
         this.words_filter = words_filter;
         try {

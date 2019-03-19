@@ -26,6 +26,7 @@ public class PageRank {
             rankNext.add(0.0);
         }
         while(true){
+            //System.out.println("R1:"+rank);
             for(int i = 0; i<CLI_RMP_Data.nbPage; i++) {
                 rankNext.set(i, 0.0);
             }
@@ -55,6 +56,7 @@ public class PageRank {
     private ArrayList<Integer> kPagesAleatoire() {
         ArrayList<Integer> res = new ArrayList<Integer>();
         while(res.size() < k){
+            //System.out.println("R2:"+res.size());
             int a = (int)(Math.random() * (CLI_RMP_Data.nbPage));
             if(!res.contains(a)){
                 res.add(a);
@@ -85,6 +87,7 @@ public class PageRank {
         for(int i = 0; i < l1.size(); i++){
             d += Math.abs(l1.get(i) - l2.get(i));
         }
+        //System.out.println("Distance: "+d);
         return d;
     }
 }

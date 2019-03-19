@@ -51,7 +51,7 @@ public class CLI_RMP extends ProcessXML {
 
     @Override
     protected void processTitle(String title) {
-        title = title.toLowerCase();
+        title = normalize(title.toLowerCase());
         numero_pages.put(title, numero_pages.size());
         lastTitle = title;
         nbPage++;

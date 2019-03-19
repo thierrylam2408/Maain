@@ -5,6 +5,7 @@ import java.util.*;
 public class Main {
 	
 	public static void main(String[] args) {
+	    /*
 	    //FILE
 		//String inputXML = "/Volumes/Lexar/frwiki-20190120-pages-articles-multistream.xml";
 		String inputXML = "frwiki-debut.xml";
@@ -12,14 +13,15 @@ public class Main {
 		String outputXML = "clean.xml";
 
 		//CORPUS
-		ArrayList<String> words_filter = new ArrayList<>(Arrays.asList("mission", "algorithme"));
+		ArrayList<String> words_filter = new ArrayList<>(Arrays.asList(splitWords(normalize("mathématiques études"))));
 		Corpus corpus = new Corpus(inputXML);
 		System.out.println(corpus.generate(outputXML, words_filter));
 
         //DICO
 		Dictionnaire dico = new Dictionnaire(outputXML);
 		ArrayList<String> dictionnaire = dico.generate();
-		System.out.println("Dico:"+dictionnaire.size());
+        System.out.println("Dico:"+dictionnaire);
+		System.out.println("taille Dico:"+dictionnaire.size());
 
 		//CLI_RMP
 		CLI_RMP cliRMP = new CLI_RMP(outputXML, dictionnaire);
@@ -30,7 +32,7 @@ public class Main {
 		System.out.println("Mot->(Page,Frequence): "+CLI_RMP_data.mots_pages);
 
 		//PageRank
-        PageRank pg = new PageRank(CLI_RMP_data, dictionnaire,0.001, 0.85, 3	); //k ~ 1000 en vrai
+        PageRank pg = new PageRank(CLI_RMP_data, dictionnaire,0.01, 0.85, 50	);
         TreeMap<Double, ArrayList<Integer>> rank = pg.generate();
         System.out.println("Rank->Page: "+rank);
         ArrayList<Integer> pagesOrder = joinPageOrderByRank(rank);
@@ -68,7 +70,7 @@ public class Main {
         }catch(final IOException ex){
             ex.printStackTrace();
         }
-
+        */
         System.out.println("Simulation Serveur");
         simuServeur();
     }
@@ -87,7 +89,7 @@ public class Main {
             final FileInputStream fin = new FileInputStream("file.ser");
             ois = new ObjectInputStream(fin);
             final FinalOutput res = (FinalOutput) ois.readObject();
-            String requete1 = "abstraite algebre";
+            String requete1 = "science algebre";
             String[] words = splitWords(requete1);
             ArrayList<ArrayList<Integer>> pages_requete = new ArrayList<>();
             for(String word: words){
@@ -99,7 +101,11 @@ public class Main {
             //Faire l'intersection des pages
             ArrayList<Integer> intersection = intersection(pages_requete, res.order_pages);
             System.out.println("Intersection:"+intersection);
+            for(Integer i: intersection){
+                System.out.println("Titre: "+res.pages.get(i));
+            }
 
+            /*
             ArrayList<Integer> e1 = new ArrayList<>();e1.addAll(Arrays.asList(3,1,2));
             ArrayList<Integer> e2 = new ArrayList<>();e2.addAll(Arrays.asList(1));
             ArrayList<Integer> e3 = new ArrayList<>();e3.addAll(Arrays.asList());
@@ -110,6 +116,7 @@ public class Main {
             System.out.println(l);
             System.out.println(intersection(l,o));
             System.out.println();
+            */
         }catch(final IOException ex ){
             ex.printStackTrace();
         } catch (ClassNotFoundException e) {
