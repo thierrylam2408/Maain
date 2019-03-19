@@ -28,14 +28,8 @@ public abstract class ProcessXML {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         
          factory.setProperty("javax.xml.stream.isCoalescing", true);
-         //factory.setFeature(, false);
+         factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
          factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-         
-         //factory.setFeature("dbvdg",false);
-
-         //factory.setXMLResolver(NO_OP_XML_RESOLVER);
-        
-        
         File filein = new File(xml);
         try {
             XMLEventReader xmlEventReader = factory.createXMLEventReader(new FileReader(filein));
